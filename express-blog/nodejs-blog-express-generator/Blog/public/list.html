@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="js/baiduTemplate.js"></script>
+    <title>Document</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: url(bg.jpg) repeat;
+        }
+        table {
+            border-collapse: collapse;
+            width: 885px;
+            margin: 0 auto;
+            text-align: center;
+            display: block;
+            margin-top: 100px;
+        }
+        table td, table th {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 45px;
+        }
+        table thead th {
+            background-color: #CCE8EB;
+            width: 220px;
+        }
+        table tr:nth-child(odd) {
+            background: #fff;
+        }
+        table tr:nth-child(even) {
+            background: #F5FAFA;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+        .left {
+            background-color:#d0daf3;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            width: 250px; 
+        }
+        .left li {
+            text-align: center;
+            height: 60px;
+            line-height: 60px;
+            font-size: 15px;
+        }
+        .left li:nth-child(1) {
+            background-color: #eee;
+        }
+        .left li:hover {
+            background-color:#eee;
+        }
+        .left a {
+            color:black;
+            text-decoration: none;
+        }
+        .right {
+            margin-left: 250px;
+        }
+        nav {
+            width: 100%;
+            min-width: 960px;
+            height: 60px;
+            background-color: #2a4795;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index:200;
+            color: white;
+            text-align: center;
+            line-height: 60px;
+            font-size: 20px;
+        }
+    </style> 
+</head>
+<body>
+    <nav></nav>
+    <div class="container">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="/list" onclick="showList()">文章列表</a>
+                </li>
+
+            </ul>
+        </div>
+        <div class="right">
+                <table  class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    编号
+                                </th>
+                                <th>
+                                    文章名称    
+                                </th>
+                                <th>
+                                    文章点击量
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="result"></tbody>
+                    </table>
+        </div>
+    </div>
+    
+        
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    window.onload = () =>{
+        var data;
+        $.ajax({
+            type:"POST",
+            contentType: "application/json;charset=UTF-8",
+            url : "/getCldate",
+            async:true,
+            success : function(result) {
+
+                data = JSON.parse(result);
+                console.log(data.length)
+                var datat = {
+                    "list":data
+                };
+                console.log(datat);
+                var bt = baidu.template;
+                var html = bt('abcd',datat);
+                document.getElementById('result').innerHTML=html;
+                /*for (var a=0;a<data.length;a++){
+                    document.getElementById(a).addEventListener("click", function () {
+                        console.log(this)
+                        console.log(this.id)
+                        let btnid = this.id
+                        $.ajax({
+                            type:"GET",
+                            contentType: "application/json;charset=UTF-8",
+                            url : "/del",
+                            data: {id:btnid},
+                            async:true,
+                            success:function (scs) {
+                                console.log(scs)
+                                window.location.replace('/list')
+                            },
+                            error : function(e){
+                                console.log(e.status);
+                                console.log(e.responseText);
+
+                            }
+                        })
+                    })
+                }*/
+
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+
+            }
+        })
+
+
+
+    }
+</script>
+<script type="text/html" id="abcd">
+    <%if(list.length>1){%>
+    <%for(var i=0;i<list.length;i++){%>
+        <tr>
+            <td>111</td>
+            <td><%=list[i].title%></td>
+            <td><%=list[i].views%></td>
+            <td><button id="<%=i%>">删除</button></td>
+        </tr>
+    <%}%>
+    <%}else{%>
+    <h2>没有list数据</h2>
+    <%}%>
+</script>
+</html>
